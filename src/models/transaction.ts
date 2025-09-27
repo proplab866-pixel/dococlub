@@ -25,6 +25,7 @@ const transactionSchema = new Schema<ITransaction>(
     },
     planId: { type: Schema.Types.ObjectId, ref: "InvestmentPlan" },
     sourceUserId: { type: Schema.Types.ObjectId, ref: "User" },
+    utrNumber: { type: String, required: false },
   },
   { timestamps: true }
 );

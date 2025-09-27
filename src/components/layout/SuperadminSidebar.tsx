@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter, usePathname } from "next/navigation";
+import { FaMoneyBillTransfer } from "react-icons/fa6";
 
 const navLinks = [
   {
@@ -26,6 +27,11 @@ const navLinks = [
     href: "/superadmin/withdrawal",
   },
   { label: "Plans", icon: <FaWallet size={26} />, href: "/superadmin/plans" },
+  {
+    label: "Deposits",
+    icon: <FaMoneyBillTransfer size={26} />,
+    href: "/superadmin/deposits",
+  },
   {
     label: "Transactions",
     icon: <FaListAlt size={26} />,
