@@ -17,39 +17,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
-      await req.json();
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+    const { amount } = await req.json();
+
+    if (!amount) {
       return NextResponse.json(
-        { success: false, error: "Missing payment details" },
+        { success: false, error: "Amount is required" },
         { status: 400 }
       );
     }
 
-    const isValid = verifyPaymentSignature(
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature
-    );
-    if (!isValid) {
+    if (amount < 100) {
       return NextResponse.json(
-        { success: false, error: "Invalid payment razorpay_signature" },
+        { success: false, error: "Amount must be greater than ₹100" },
         { status: 400 }
       );
     }
-
-    // Fetch the actual order amount from Razorpay
-    const razorpay = getRazorpayInstance();
-    let order;
-    try {
-      order = await razorpay.orders.fetch(razorpay_order_id);
-    } catch {
-      return NextResponse.json(
-        { success: false, error: "Failed to fetch order from Razorpay" },
-        { status: 500 }
-      );
-    }
-    const amount = (order?.amount as number) / 100 || 0; // amount is in paise
 
     const user = await UserModel.findById(userInfo.userId);
     if (!user) {
@@ -59,23 +41,26 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Save transaction
+    // Generate unique transactionId
+    const transactionId = `txn_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+
+    // 1️⃣ Create deposit transaction
     await TransactionModel.create({
       userId: user._id,
       type: "deposit",
-      transactionId: razorpay_payment_id,
+      transactionId,
       date: new Date(),
-      amount: amount,
+      amount,
       status: "completed",
     });
 
-    // Update user balance
+    // 2️⃣ Update user balance
     user.availableBalance = (user.availableBalance || 0) + amount;
     await user.save();
 
     return NextResponse.json({
       success: true,
-      message: "Payment verified",
+      message: "Amount credited successfully",
       balance: user.availableBalance,
     });
   } catch {
