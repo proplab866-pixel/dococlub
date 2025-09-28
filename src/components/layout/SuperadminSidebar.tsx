@@ -13,6 +13,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter, usePathname } from "next/navigation";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
+import { MdPayment } from "react-icons/md";
 
 const navLinks = [
   {
@@ -21,6 +22,11 @@ const navLinks = [
     href: "/superadmin/dashboard",
   },
   { label: "Users", icon: <FaUser size={26} />, href: "/superadmin/users" },
+  { 
+    label: "PaymentGetway",
+    icon: <MdPayment size={26} />,
+    href: "/superadmin/paymentgetway",
+  },
   {
     label: "Withdrawal",
     icon: <FaMoneyBillWave size={26} />,
