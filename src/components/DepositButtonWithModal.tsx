@@ -305,6 +305,7 @@ export function DepositButtonWithModal() {
                     <input
                       type="number"
                       min={1050} // optional, just to give HTML hint
+                      max={100000}
                       placeholder="Enter amount in ₹"
                       value={amount}
                       onChange={handleAmountChange}
